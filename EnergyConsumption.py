@@ -4,6 +4,7 @@
 # laste change: 17.11.2023
 # author: Noah Clasen
 # use: calculate forecast till 2023
+#test Bjarne
 #-----------------------------------------
 
 # import
@@ -21,12 +22,12 @@ def energyConsumption(consumption_df):
     prognose2030df = verbrauch2022df.copy()
     faktor = faktorRechnung(verbrauch2022df, wärmepumpeHochrechnung2030, eMobilitätHochrechnung2030)
 
-    prognose2030df['Gesamt (Netzlast) [kWh] Originalauflösungen'] = prognose2030df['Gesamt (Netzlast) [MWh] Originalauflösungen'] * faktor * 1000
+    prognose2030df['Verbrauch [kWh]'] = prognose2030df['Gesamt (Netzlast) [MWh] Originalauflösungen'] * faktor * 1000
 
     print("2022:")
     print(verbrauch2022df)
     print("\n 2030: (Faktor: " + str(faktor) + ")")
-    print(prognose2030df[['Datum', 'Gesamt (Netzlast) [kWh] Originalauflösungen']])
+    print(prognose2030df[['Datum', 'Verbrauch [kWh]']])
 def wärmepumpe():
     wärmepumpeAnzahl2030 = 500000 * (2030 - 2023)  # 500k pro Jahr bis 2023
 
@@ -65,15 +66,22 @@ def eMobilität():
     return (eMobilität2030 - eMobilitätBisher) * eMobilitätVerbrauch
 
 def faktorRechnung(verbrauch2022df, wärmepumpeHochrechnung2030, eMobilitätHochrechnung2030):
-
-
     gesamtVerbrauch2022 = otherFactors() + verbrauch2022df['Gesamt (Netzlast) [MWh] Originalauflösungen'].sum() * 1000 #mal1000 weil MWh -> kWh
     print('\n', 'gesamtVerbrauch2022', f"{gesamtVerbrauch2022:,.0f}".replace(",", "."))
     return (gesamtVerbrauch2022 + wärmepumpeHochrechnung2030 + eMobilitätHochrechnung2030) / gesamtVerbrauch2022
 
 def prognoseRechnung(verbrauch2022df, faktor):
-    verbrauch2030df = verbrauch2022df['Gesamt (Netzlast) [MWh] Originalauflösungen'] * faktor
+    verbrauch2030df = verbrauch2022df['Verbrauch [kWh]'] * faktor
     return verbrauch2030df
 
 def otherFactors():
-    railway = 5000
+    #positive Faktoren
+    railway = 5000 #kWh
+    batterieProdAndServerRooms = 13000 #kwh
+    powerNetLoss = 1000
+
+    #negative Faktoren
+    efficiency = 51000
+    other = 6000
+    
+    return railway + batterieProdAndServerRooms + powerNetLoss - efficiency - other

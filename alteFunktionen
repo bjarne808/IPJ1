@@ -1,0 +1,98 @@
+# Function to calculate percentage distribution
+def range1(array1, array2):
+    if len(array1) != len(array2):
+        raise ValueError("Arrays must be the same length")
+
+    counts = [0] * 111
+
+    for val1, val2 in zip(array1, array2):
+        ratio = val1 / val2
+        percent = int(ratio * 100)
+
+        if percent == 100:
+            counts[percent] += 1
+        elif 0 <= percent < 110:
+            counts[percent] += 1
+
+    return counts
+
+# Die Funktion, die erlaubt, die Anteile auszugeben und nachzuprüfen
+# Ausgabe von Anteilen
+def get_result(array1, array2):
+    print("Anteile in %:")
+    if len(array1) != len(array2):
+        raise ValueError("Arrays must be the same length")
+    
+    for val1, val2 in zip(array1, array2):
+        print( val1, "% :"   , val2)
+
+get_result(n, counts)
+print("Anzahl der Viertelstunden in 3 Jahren:", sum(counts))
+print()
+
+# Calculation and plotting
+counts = range1(total_renewable_production, total_consumption)
+n = list(range(111))  # Convert range to a list
+
+# Create a bar chart
+fig = go.Figure(data=[go.Bar(x=n, y=counts)])
+
+# X-axis label settings
+fig.update_layout(xaxis=dict(tickmode='array', tickvals=list(range(0, 115, 5)), ticktext=[f'{i}%' for i in range(0, 115, 5)]))
+
+# Y-axis and title settings
+fig.update_layout(title='Number of quarter-hours with 1-115 % share of renewable energy',
+                  xaxis_title='Percentage of renewable energy',
+                  yaxis_title='Number of quarter-hours')
+
+# Display the chart
+fig.show()
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+"""
+# Ein Beispiel für die Berechnung der Gesamtsumme einer bestimmten Art
+selected_energy_type = WIND_ONSHORE
+
+# Für einen Tag
+selected_production_day = selected_production[selected_energy_type].sum()
+print(f"{selected_energy_type} Production on {selected_date}: {selected_production_day} MWh")
+
+# Für ein Jahr
+selected_production_year = production_by_type_and_year.loc[selected_date.year, selected_energy_type]
+print(f"{selected_energy_type} Production for {selected_date.year}: {selected_production_year} MWh")
+
+# Ein Beispiel für die Arbeit mit Listen einer bestimmten Art
+selected_energy_type = WIND_ONSHORE
+
+# Für einen Tag
+selected_production_day_list = selected_production[selected_energy_type].astype(float).tolist()
+print(f"{selected_energy_type} Production List on {selected_date}: {selected_production_day_list}")
+
+# Für ein Jahr
+selected_production_year_list = production_by_type_and_year.loc[selected_date.year, selected_energy_type].tolist()
+print(f"{selected_energy_type} Production List for {selected_date.year}: {selected_production_year_list}")
+
+"""
+
+---------------------------------------------------------------------------------------------------------------------------------------
+# Plotting 21.11.2023
+plt.figure(figsize=(12, 6))
+plt.plot(selected_production[STARTTIME], selected_production['Total Production'], label='Total Renewable Production')
+plt.plot(selected_consumption[STARTTIME], selected_consumption[CONSUMPTION], label='Total Consumption')
+
+plt.title(f'Renewable Energy Production and Total Consumption on {selected_date_str}')
+plt.xlabel('Time (hours)')
+plt.ylabel('Energy (MWh)')
+plt.legend()
+plt.grid(True)
+
+# Format x-axis ticks and labels
+unique_hours = sorted(selected_production[STARTTIME].dt.hour.unique())
+plt.xticks(selected_production[STARTTIME], selected_production[STARTTIME].dt.strftime('%H:%M'), rotation=45)
+plt.gca().set_xticks(selected_production[STARTTIME][::4])
+plt.gca().set_xticklabels(selected_production[STARTTIME].dt.strftime('%H')[::4])
+
+plt.show()
+------------------------------------------------------------------------------------------------------------------------------------------

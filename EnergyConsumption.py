@@ -30,6 +30,8 @@ def energyConsumption(consumption_df):
     print("2022:")
     print(verbrauch2022df)
     print("\n 2030: (Faktor: " + str(faktor) + ")")
+    print("Verbrauch gesamt 2030:")
+    print(prognose2030df['Verbrauch [kWh]'].sum())
     print(prognose2030df[['Datum', 'Verbrauch [kWh]']])
     return prognose2030df
 
@@ -89,4 +91,4 @@ def otherFactors():
     efficiency = 51000
     other = 6000
     
-    return railway + batterieProdAndServerRooms + powerNetLoss - efficiency - other
+    return (railway + batterieProdAndServerRooms + powerNetLoss - efficiency - other)*(7/12) #7/12 weils zahlen von 2018 bis 2030

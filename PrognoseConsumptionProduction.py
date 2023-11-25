@@ -34,6 +34,9 @@ def oneDayPlot(prog2030):
     selected_date_str = input("geben Sie das Datum im Format TT.MM.JJJJ ein: ")
     selected_date = datetime.strptime(selected_date_str, "%d.%m.%Y")
 
+    # Filter the dataframe to only include rows with the selected date
+    prog2030 = prog2030[prog2030['Datum'] == selected_date]
+
     # Create a new Plotly subplot figure
     fig = make_subplots()
 
@@ -41,7 +44,7 @@ def oneDayPlot(prog2030):
     fig.add_trace(
         go.Scatter(
             x=prog2030['Anfang'].dt.strftime('%H:%M'), 
-            y=prog2030['Verbrauch [kWh]'],
+            y=prog2030['Verbrauch [kWh]']/1000000,
             mode='lines',
             name='Total Consumption',
             fill='tozeroy'
@@ -52,7 +55,7 @@ def oneDayPlot(prog2030):
     fig.add_trace(
         go.Scatter(
             x=prog2030['Anfang'].dt.strftime('%H:%M'),
-            y=prog2030['Total Production[kWh]'],
+            y=prog2030['Total Production[kWh]']/1000000,
             mode='lines',
             name='Total Renewable Production',
             fill='tozeroy'
@@ -63,7 +66,7 @@ def oneDayPlot(prog2030):
     fig.update_layout(
         title=f'Energy Production and Consumption on {selected_date}',
         xaxis=dict(title='Time (hours)'),
-        yaxis=dict(title='Energy (MWh)'),
+        yaxis=dict(title='Energy (GWh)'),
         showlegend=True
     )
 

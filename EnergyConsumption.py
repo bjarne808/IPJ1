@@ -21,6 +21,9 @@ def energyConsumption(consumption_df):
     verbrauch2022df = consumption_df[consumption_df['Datum'].dt.year == 2022]
     prognose2030df = verbrauch2022df.copy()
     faktor = faktorRechnung(verbrauch2022df, wärmepumpeHochrechnung2030, eMobilitätHochrechnung2030)
+    
+    # Change the year in 'Datum' column to 2030
+    prognose2030df['Datum'] = prognose2030df['Datum'].map(lambda x: x.replace(year=2030))
 
     prognose2030df['Verbrauch [kWh]'] = prognose2030df['Gesamt (Netzlast) [MWh] Originalauflösungen'] * faktor * 1000
 
@@ -28,6 +31,8 @@ def energyConsumption(consumption_df):
     print(verbrauch2022df)
     print("\n 2030: (Faktor: " + str(faktor) + ")")
     print(prognose2030df[['Datum', 'Verbrauch [kWh]']])
+    return prognose2030df
+
 def wärmepumpe():
     wärmepumpeAnzahl2030 = 500000 * (2030 - 2023)  # 500k pro Jahr bis 2023
 
